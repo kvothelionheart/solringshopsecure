@@ -125,9 +125,24 @@ function useInventory() {
   // Load inventory from Supabase on mount
   useEffect(() => {
     let mounted = true;
-    db.fetchInventory().then((data) => {
+    db.fetchInventory().then((rawData) => {
       if (mounted) {
-        setInventory(data);
+        // Transform snake_case to camelCase for frontend
+        const transformedData = rawData.map(item => ({
+          ...item,
+          imageUri: item.image_uri,
+          imageLarge: item.image_large,
+          cardId: item.card_id,
+          setCode: item.set_code,
+          setName: item.set_name,
+          collectorNumber: item.collector_number,
+          oracleText: item.oracle_text,
+          manaCost: item.mana_cost,
+          typeLine: item.type_line,
+          scryfallUri: item.scryfall_uri,
+          addedAt: item.added_at,
+        }));
+        setInventory(transformedData);
         setLoading(false);
       }
     });
