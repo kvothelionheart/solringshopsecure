@@ -10,6 +10,7 @@ export function AuthModal({ onClose, onSuccess }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const { login, signup, loginWithWallet, signupWithWallet, loginWithMagicLink, resetPassword } = useAuth();
 
@@ -333,15 +334,24 @@ export function AuthModal({ onClose, onSuccess }) {
 
               <div className="auth-form-group">
                 <label className="auth-label">Password</label>
-                <input
-                  className="auth-input"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
-                  autoComplete={mode === "login" ? "current-password" : "new-password"}
-                />
+                <div className="auth-password-wrapper">
+                  <input
+                    className="auth-input"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
+                    autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  />
+                  <button
+                    type="button"
+                    className="auth-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                </div>
               </div>
 
               {error && <p className="auth-error">{error}</p>}
