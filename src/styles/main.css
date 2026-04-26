@@ -3444,14 +3444,18 @@ img { display: block; }
 }
 
 .updates-header h1 {
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 8px;
   color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  letter-spacing: 2px;
 }
 
 .updates-header p {
   color: #aaa;
   font-size: 1.1rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .updates-categories {
@@ -3923,13 +3927,16 @@ img { display: block; }
 }
 
 .posts-admin-header h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: var(--gold);
-  font-weight: 700;
+  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
 }
 
 .btn-create-post {
-  padding: 12px 28px;
+  display: inline-block !important;
+  padding: 14px 32px;
   background: var(--gold);
   color: #000;
   border: none;
@@ -3938,8 +3945,11 @@ img { display: block; }
   cursor: pointer;
   transition: var(--transition);
   font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .btn-create-post:hover {
