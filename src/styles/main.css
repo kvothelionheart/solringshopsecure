@@ -3899,6 +3899,9 @@ img { display: block; }
   cursor: pointer;
   transition: var(--transition);
   font-size: 0.95rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .sf-updates-link:hover {
@@ -3936,10 +3939,10 @@ img { display: block; }
 
 .btn-create-post {
   display: inline-block !important;
-  padding: 14px 32px;
-  background: var(--gold);
-  color: #000;
-  border: none;
+  padding: 14px 32px !important;
+  background: var(--gold) !important;
+  color: #000 !important;
+  border: 2px solid var(--gold) !important;
   border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
@@ -3953,7 +3956,9 @@ img { display: block; }
 }
 
 .btn-create-post:hover {
-  background: #fff;
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #fff !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(212, 184, 106, 0.3);
 }
