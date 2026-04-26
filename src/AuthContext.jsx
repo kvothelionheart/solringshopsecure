@@ -29,11 +29,13 @@ export function AuthProvider({ children }) {
   }, []);
 
   const checkSession = async () => {
+    console.log("AuthContext: Checking session...");
     try {
       const profile = await db.getCurrentUser();
+      console.log("AuthContext: Got profile:", profile);
       setUser(profile);
     } catch (err) {
-      console.error("Session check error:", err);
+      console.error("AuthContext: Session check error:", err);
       setUser(null);
     } finally {
       setLoading(false);
