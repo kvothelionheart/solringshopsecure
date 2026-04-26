@@ -15,12 +15,17 @@ export function AuthProvider({ children }) {
     const { data: { subscription } } = db.supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event);
       
-      if (session?.user) {
-        const profile = await db.getCurrentUser();
-        setUser(profile);
-      } else {
+      // Only update user state for meaningful changes
+      if (event === 'SIGNED_OUT') {
         setUser(null);
+      } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        const profile = await db.getCurrentUser();
+        if (profile) {
+          setUser(profile);
+        }
+        // Don't clear user if profile fetch fails - keep existing user
       }
+      // Ignore INITIAL_SESSION and other events that don't need user updates
       
       setLoading(false);
     });

@@ -6,6 +6,7 @@ import { OrdersPage } from "./OrdersPage.jsx";
 import { ProfilePage } from "./ProfilePage.jsx";
 import { AccountSettings } from "./AccountSettings.jsx";
 import { ResetPasswordPage } from "./ResetPasswordPage.jsx";
+import { UpdatesPage } from "./UpdatesPage.jsx";
 import * as db from "./supabase.js";
 import { syncAllPrices } from "./priceSync.js";
 
@@ -1293,6 +1294,9 @@ export default function App() {
   }
   if (path === "/auth/reset-password") {
     return <ResetPasswordPage />;
+  }
+  if (path === "/updates") {
+    return <UpdatesPage />;
   }
 
   // Show storefront to public by default

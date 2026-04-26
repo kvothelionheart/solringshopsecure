@@ -512,3 +512,167 @@ export async function getReviewsByCard(cardId) {
     .order('created_at', { ascending: false });
   return error ? [] : data;
 }
+
+// ─── POSTS OPERATIONS ─────────────────────────────────────────────────────────
+
+export async function getPosts(category = null) {
+  let query = supabase
+    .from("posts")
+    .select("*")
+    .order("pinned", { ascending: false })
+    .order("created_at", { ascending: false });
+  
+  if (category) {
+    query = query.eq("category", category);
+  }
+  
+  const { data, error } = await query;
+  return error ? [] : data;
+}
+
+export async function getPost(id) {
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .single();
+  return error ? null : data;
+}
+
+export async function createPost(post) {
+  const { data, error} = await supabase
+    .from("posts")
+    .insert(post)
+    .select();
+  return error ? null : data[0];
+}
+
+export async function updatePost(id, updates) {
+  const { error } = await supabase
+    .from("posts")
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  return !error;
+}
+
+export async function deletePost(id) {
+  const { error } = await supabase
+    .from("posts")
+    .delete()
+    .eq("id", id);
+  return !error;
+}
+
+// ─── COMMENTS OPERATIONS ──────────────────────────────────────────────────────
+
+export async function getComments(postId) {
+  const { data, error } = await supabase
+    .from("comments")
+    .select(`
+      *,
+      profiles:user_id (username, display_name)
+    `)
+    .eq("post_id", postId)
+    .order("created_at", { ascending: true });
+  
+  if (error) return [];
+  
+  return data.map(comment => ({
+    ...comment,
+    username: comment.profiles?.username || "Anonymous"
+  }));
+}
+
+export async function addComment(postId, content) {
+  const userId = (await getCurrentUser())?.id;
+  if (!userId) return null;
+  
+  const { data, error } = await supabase
+    .from("comments")
+    .insert({
+      post_id: postId,
+      user_id: userId,
+      content
+    })
+    .select();
+  return error ? null : data[0];
+}
+
+export async function deleteComment(id) {
+  const { error } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", id);
+  return !error;
+}
+
+// ─── REACTIONS OPERATIONS ─────────────────────────────────────────────────────
+
+export async function getPostReactions(postId) {
+  const { data, error } = await supabase
+    .from("post_reactions")
+    .select("*")
+    .eq("post_id", postId);
+  return error ? [] : data;
+}
+
+export async function addReaction(postId, emoji) {
+  const userId = (await getCurrentUser())?.id;
+  if (!userId) return null;
+  
+  const { data, error } = await supabase
+    .from("post_reactions")
+    .insert({
+      post_id: postId,
+      user_id: userId,
+      emoji
+    })
+    .select();
+  return error ? null : data[0];
+}
+
+export async function removeReaction(id) {
+  const { error } = await supabase
+    .from("post_reactions")
+    .delete()
+    .eq("id", id);
+  return !error;
+}
+
+// ─── POLL OPERATIONS ──────────────────────────────────────────────────────────
+
+export async function votePoll(postId, optionIndex) {
+  const userId = (await getCurrentUser())?.id;
+  if (!userId) return false;
+  
+  // Get current post
+  const { data: post } = await supabase
+    .from("posts")
+    .select("poll_options")
+    .eq("id", id)
+    .single();
+  
+  if (!post) return false;
+  
+  const options = post.poll_options || [];
+  
+  // Remove users vote from all options
+  options.forEach(opt => {
+    opt.votes = (opt.votes || []).filter(id => id !== userId);
+  });
+  
+  // Add vote to selected option
+  if (options[optionIndex]) {
+    options[optionIndex].votes = options[optionIndex].votes || [];
+    options[optionIndex].votes.push(userId);
+  }
+  
+  // Update post
+  const { error } = await supabase
+    .from("posts")
+    .update({ poll_options: options })
+    .eq("id", postId);
+  
+  return !error;
+}
+

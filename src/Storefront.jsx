@@ -484,6 +484,14 @@ function StorefrontNav({ cartCount, onCartOpen, onAdminToggle, user, onLoginClic
         <span className="sf-nav-ring">⭕</span>
         <span className="sf-nav-name">THE SOL RING SHOP</span>
       </div>
+      <div className="sf-nav-center">
+        <button 
+          className="sf-updates-link"
+          onClick={() => window.location.href = '/updates'}
+        >
+          Updates
+        </button>
+      </div>
       <div className="sf-nav-right">
         {user ? (
           <div className="sf-user-menu" ref={menuRef}>
