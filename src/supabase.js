@@ -186,13 +186,18 @@ export async function signOut() {
 
 export async function getCurrentUser() {
   console.log("getCurrentUser called");
-  const { data: { user } } = await supabase.auth.getUser();
-  console.log("Supabase auth user:", user);
   
-  if (!user) {
-    console.log("No auth user found");
+  // Get session from storage
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  console.log("Session from storage:", session, "Error:", sessionError);
+  
+  if (!session?.user) {
+    console.log("No session user found");
     return null;
   }
+
+  const user = session.user;
+  console.log("Session user:", user);
 
   const { data: profile, error } = await supabase
     .from('profiles')
