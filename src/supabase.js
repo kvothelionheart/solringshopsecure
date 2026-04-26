@@ -335,6 +335,9 @@ export async function getInventory() {
   return error ? [] : data;
 }
 
+// Compatibility aliases
+export const fetchInventory = getInventory;
+
 export async function addToInventory(card) {
   const { data, error } = await supabase
     .from('inventory')
@@ -342,6 +345,9 @@ export async function addToInventory(card) {
     .select();
   return error ? null : data[0];
 }
+
+// Compatibility alias
+export const insertCard = addToInventory;
 
 export async function updateInventoryItem(id, updates) {
   const { error } = await supabase
@@ -351,6 +357,9 @@ export async function updateInventoryItem(id, updates) {
   return !error;
 }
 
+// Compatibility alias
+export const updateCard = updateInventoryItem;
+
 export async function deleteInventoryItem(id) {
   const { error } = await supabase
     .from('inventory')
@@ -358,6 +367,9 @@ export async function deleteInventoryItem(id) {
     .eq('id', id);
   return !error;
 }
+
+// Compatibility alias
+export const deleteCard = deleteInventoryItem;
 
 export async function bulkImportInventory(cards) {
   const CHUNK_SIZE = 100;
@@ -391,6 +403,9 @@ export async function bulkImportInventory(cards) {
   return results;
 }
 
+// Compatibility alias
+export const bulkInsertCards = bulkImportInventory;
+
 export async function clearAllInventory() {
   const { error } = await supabase
     .from('inventory')
@@ -416,6 +431,9 @@ export async function getOrders() {
     .order('created_at', { ascending: false });
   return error ? [] : data;
 }
+
+// Compatibility alias
+export const fetchOrders = getOrders;
 
 export async function getOrdersByProfile(profileId) {
   const { data, error } = await supabase
