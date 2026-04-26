@@ -3399,3 +3399,31 @@ img { display: block; }
   text-align: center;
   margin: 0;
 }
+
+/* ─── PASSWORD TOGGLE ──────────────────────────────────────────────────────── */
+
+.auth-password-wrapper {
+  position: relative;
+}
+
+.auth-password-wrapper .auth-input {
+  padding-right: 45px;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  opacity: 0.6;
+  transition: var(--transition);
+}
+
+.auth-password-toggle:hover {
+  opacity: 1;
+}
