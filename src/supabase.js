@@ -185,29 +185,50 @@ export async function signOut() {
 }
 
 export async function getCurrentUser() {
-  console.log("getCurrentUser called");
+  console.log("getCurrentUser called - using direct localStorage approach");
   
-  // Get session from storage
-  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-  console.log("Session from storage:", session, "Error:", sessionError);
-  
-  if (!session?.user) {
-    console.log("No session user found");
+  try {
+    // Get session directly from localStorage
+    const storageKey = `sb-${SUPABASE_URL.split('//')[1].split('.')[0]}-auth-token`;
+    const sessionStr = localStorage.getItem(storageKey);
+    console.log("Storage key:", storageKey);
+    console.log("Raw session string exists:", !!sessionStr);
+    
+    if (!sessionStr) {
+      console.log("No session in localStorage");
+      return null;
+    }
+
+    const sessionData = JSON.parse(sessionStr);
+    console.log("Parsed session data:", sessionData);
+    
+    if (!sessionData?.user?.id) {
+      console.log("No user ID in session");
+      return null;
+    }
+
+    const userId = sessionData.user.id;
+    console.log("User ID from session:", userId);
+
+    // Fetch profile directly with fetch API
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=*`,
+      {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        }
+      }
+    );
+
+    const profiles = await response.json();
+    console.log("Profile fetch response:", profiles);
+
+    return profiles?.[0] || null;
+  } catch (err) {
+    console.error("getCurrentUser error:", err);
     return null;
   }
-
-  const user = session.user;
-  console.log("Session user:", user);
-
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
-  console.log("Profile fetch result:", { profile, error });
-
-  return profile;
 }
 
 // ─── WALLET AUTH (Keep existing functionality) ────────────────────────────────
