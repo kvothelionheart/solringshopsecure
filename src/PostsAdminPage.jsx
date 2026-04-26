@@ -57,6 +57,13 @@ export function PostsAdminPage() {
         <button
           className="btn-create-post"
           onClick={() => setMode("create")}
+          style={{
+            display: 'block',
+            visibility: 'visible',
+            opacity: 1,
+            position: 'relative',
+            zIndex: 9999
+          }}
         >
           + Create New Post
         </button>

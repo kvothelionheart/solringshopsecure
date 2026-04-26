@@ -4400,3 +4400,26 @@ img { display: block; }
   background: rgba(239, 68, 68, 0.2);
   border-color: #ef4444;
 }
+/* Fix all heading fonts to use Cinzel */
+h1, h2, h3, h4, h5, h6,
+.updates-header h1,
+.posts-admin-header h2,
+.post-modal h2,
+.post-card h3,
+.sf-nav-name,
+.checkout-modal h2,
+.profile-header h1 {
+  font-family: 'Cinzel', serif !important;
+  font-weight: 600 !important;
+}
+
+/* Fix Updates page button */
+.sf-updates-link {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+/* Ensure body text uses Inter */
+body, p, span, div, button, input, textarea, select {
+  font-family: 'Inter', sans-serif;
+}
