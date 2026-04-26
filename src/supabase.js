@@ -185,15 +185,22 @@ export async function signOut() {
 }
 
 export async function getCurrentUser() {
+  console.log("getCurrentUser called");
   const { data: { user } } = await supabase.auth.getUser();
+  console.log("Supabase auth user:", user);
   
-  if (!user) return null;
+  if (!user) {
+    console.log("No auth user found");
+    return null;
+  }
 
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single();
+
+  console.log("Profile fetch result:", { profile, error });
 
   return profile;
 }
