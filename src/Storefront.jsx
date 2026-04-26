@@ -304,7 +304,13 @@ function ListingCard({ item, onAddToCart, onCardClick, cartQty }) {
 
 // ─── CART DRAWER ──────────────────────────────────────────────────────────────
 
-function CartDrawer({ cart, cartTotal, onRemove, onUpdateQty, onClose, onCheckout }) {
+function CartDrawer({ cart, cartTotal, onRemove, onUpdateQty, onClose, onCheckout, onClearCart }) {
+  const handleClearCart = () => {
+    if (confirm(`Clear all ${cart.length} item(s) from cart?`)) {
+      onClearCart();
+    }
+  };
+
   return (
     <div className="sf-cart-overlay" onClick={onClose}>
       <div className="sf-cart-drawer" onClick={(e) => e.stopPropagation()}>
@@ -359,6 +365,9 @@ function CartDrawer({ cart, cartTotal, onRemove, onUpdateQty, onClose, onCheckou
             </div>
 
             <div className="sf-cart-footer">
+              <button className="sf-clear-cart-btn" onClick={handleClearCart}>
+                Clear Cart
+              </button>
               <div className="sf-cart-total">
                 <span>Total</span>
                 <span className="sf-cart-total-price">{formatPrice(cartTotal)}</span>
@@ -722,6 +731,7 @@ export function Storefront({ inventory, onAdminToggle }) {
           onUpdateQty={updateCartQty}
           onClose={() => setCartOpen(false)}
           onCheckout={() => { setCartOpen(false); setCheckoutOpen(true); }}
+          onClearCart={clearCart}
         />
       )}
 
