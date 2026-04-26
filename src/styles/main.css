@@ -4428,3 +4428,63 @@ h1, h2, h3, h4, h5, h6,
 body, p, span, div, button, input, textarea, select {
   font-family: 'Inter', sans-serif;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* COLOR FIXES - VISIBILITY ISSUES                                              */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Fix Publish button */
+.btn-save {
+  background: var(--gold) !important;
+  color: #000 !important;
+  border: 2px solid var(--gold) !important;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+/* Fix Post Comment button */
+.comment-form button {
+  background: var(--gold) !important;
+  color: #000 !important;
+  border: 2px solid var(--gold) !important;
+}
+
+.comment-form button:hover:not(:disabled) {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+/* Fix all post editor buttons */
+.btn-preview,
+.btn-cancel,
+.btn-add-option {
+  color: #fff !important;
+}
+
+/* Fix Updates header font */
+.sf-updates-link {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: none !important;
+  font-size: 1rem !important;
+}
+
+/* Fix all headings to use Cinzel consistently */
+.posts-admin-header h2,
+.post-editor-header h2,
+.post-modal-header h2,
+.updates-header h1 {
+  font-family: 'Cinzel', serif !important;
+  font-weight: 600 !important;
+}
+
+/* Fix post card title */
+.post-card h3,
+.post-admin-card h3 {
+  font-family: 'Cinzel', serif !important;
+  font-weight: 600 !important;
+}
