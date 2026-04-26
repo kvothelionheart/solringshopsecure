@@ -7,6 +7,7 @@ import { ProfilePage } from "./ProfilePage.jsx";
 import { AccountSettings } from "./AccountSettings.jsx";
 import { ResetPasswordPage } from "./ResetPasswordPage.jsx";
 import { UpdatesPage } from "./UpdatesPage.jsx";
+import { PostsAdminPage } from "./PostsAdminPage.jsx";
 import * as db from "./supabase.js";
 import { syncAllPrices } from "./priceSync.js";
 
@@ -277,6 +278,12 @@ function NavBar({ page, setPage, inventoryCount, onStorefrontToggle }) {
           onClick={() => setPage("orders")}
         >
           Orders
+        </button>
+        <button
+          className={`nav-btn ${page === "posts" ? "active" : ""}`}
+          onClick={() => setPage("posts")}
+        >
+          Posts
         </button>
         <button
           className={`nav-btn ${page === "import" ? "active" : ""}`}
@@ -1330,6 +1337,7 @@ export default function App() {
         )}
         {page === "add" && <AddCardsPage onAddCard={addCard} />}
         {page === "orders" && <OrdersPage />}
+        {page === "posts" && <PostsAdminPage />}
         {page === "import" && (
           <ImportPage
             onImportComplete={(entries) => {
