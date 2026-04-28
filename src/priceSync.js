@@ -86,6 +86,7 @@ export async function syncAllPrices(inventory, onProgress, updateCardFn) {
     }
 
     const newPrice = calculatePrice(sourcePrice, priceData.rarity || entry.rarity, entry.foil);
+    console.log(`[Price Sync] ${entry.name}: $${sourcePrice} → $${newPrice} (${getMarkupPercent()}% markup, rarity: ${priceData.rarity})`);
 
     await updateCardFn(entry.id, { price: newPrice });
     updated++;

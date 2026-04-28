@@ -61,6 +61,14 @@ export function PriceSettingsPanel({ inventory, onPricesUpdated }) {
     setSyncing(false);
     setSyncProgress(null);
 
+    alert(
+      `Price sync complete!\n\n` +
+      `Updated: ${results.updated}\n` +
+      `No price: ${results.skipped}\n` +
+      `Failed: ${results.failed}\n\n` +
+      `Refresh the page to see updated prices.`
+    );
+
     if (onPricesUpdated) {
       onPricesUpdated();
     }

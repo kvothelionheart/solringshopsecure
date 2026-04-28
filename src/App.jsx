@@ -1040,7 +1040,7 @@ function InventoryPage({ inventory, onRemove, onUpdate, onClearAll }) {
     <div className="inventory-page">
       <PriceSettingsPanel 
         inventory={inventory}
-        onPricesUpdated={() => window.location.reload()}
+        onPricesUpdated={null}
       />
       
       <div className="inv-header">
