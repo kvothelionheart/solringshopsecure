@@ -51,9 +51,13 @@ export function PriceSettingsPanel({ inventory, onPricesUpdated }) {
       (progress) => {
         setSyncProgress(progress);
       },
-      async (cardId, newPrice) => {
+      async (cardId, updates) => {
         // Update card in database
-        await db.updateInventoryItem(cardId, { price: newPrice });
+        const success = await db.updateInventoryItem(cardId, updates);
+        if (!success) {
+          console.error(`Failed to update card ${cardId}:`, updates);
+        }
+        return success;
       }
     );
 

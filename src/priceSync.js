@@ -79,7 +79,7 @@ export async function syncAllPrices(inventory, onProgress, updateCardFn) {
       const floor = (rarity === "rare" || rarity === "mythic")
         ? FLOOR_RARE_MYTHIC
         : FLOOR_COMMON_UNCOMMON;
-      await updateCardFn(entry.id, { price: floor.toFixed(2) });
+      await updateCardFn(entry.id, { price: floor });
       skipped++;
       await sleep(150);
       continue;
@@ -88,7 +88,7 @@ export async function syncAllPrices(inventory, onProgress, updateCardFn) {
     const newPrice = calculatePrice(sourcePrice, priceData.rarity || entry.rarity, entry.foil);
     console.log(`[Price Sync] ${entry.name}: $${sourcePrice} → $${newPrice} (${getMarkupPercent()}% markup, rarity: ${priceData.rarity})`);
 
-    await updateCardFn(entry.id, { price: newPrice });
+    await updateCardFn(entry.id, { price: parseFloat(newPrice) });
     updated++;
     await sleep(150);
   }
