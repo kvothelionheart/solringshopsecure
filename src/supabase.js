@@ -676,3 +676,37 @@ export async function votePoll(postId, optionIndex) {
   return !error;
 }
 
+
+// ─── SETTINGS OPERATIONS ──────────────────────────────────────────────────────
+
+export async function getSetting(key) {
+  const { data, error } = await supabase
+    .from("settings")
+    .select("value")
+    .eq("key", key)
+    .single();
+  
+  if (error) return null;
+  return data?.value;
+}
+
+export async function setSetting(key, value) {
+  const { error } = await supabase
+    .from("settings")
+    .upsert({
+      key,
+      value: value.toString(),
+      updated_at: new Date().toISOString()
+    });
+  
+  return !error;
+}
+
+export async function getMarkupPercent() {
+  const value = await getSetting("price_markup_percent");
+  return value ? parseFloat(value) : 10; // Default 10%
+}
+
+export async function setMarkupPercent(percent) {
+  return await setSetting("price_markup_percent", percent);
+}

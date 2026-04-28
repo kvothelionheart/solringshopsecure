@@ -4489,3 +4489,207 @@ body, p, span, div, button, input, textarea, select {
   font-family: 'Cinzel', serif !important;
   font-weight: 600 !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* PRICE SETTINGS PANEL                                                         */
+/* ═══════════════════════════════════════════════════════════════════════════ */
+
+.price-settings-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.price-settings-panel h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+}
+
+.setting-group {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setting-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.setting-group label {
+  display: block;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.markup-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.markup-input-group input {
+  width: 100px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.markup-input-group input:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.markup-unit {
+  font-size: 1.2rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.btn-save-markup,
+.btn-sync-prices {
+  padding: 12px 24px;
+  background: var(--gold);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-save-markup:hover:not(:disabled),
+.btn-sync-prices:hover:not(:disabled) {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-save-markup:disabled,
+.btn-sync-prices:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-sync-prices {
+  background: var(--green);
+  width: 100%;
+}
+
+.setting-description {
+  color: #aaa;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.sync-progress {
+  margin-top: 20px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+}
+
+.current-card {
+  color: #aaa;
+  font-weight: 400;
+}
+
+.sync-results {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+}
+
+.sync-results h4 {
+  color: var(--green);
+  margin-bottom: 16px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.result-stat {
+  text-align: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.result-stat.success {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.result-stat.warning {
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.result-stat.error {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.stat-label {
+  display: block;
+  color: #aaa;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  display: block;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.error-details {
+  margin-top: 12px;
+}
+
+.error-details summary {
+  color: var(--red);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.error-details ul {
+  margin-top: 8px;
+  padding-left: 20px;
+  color: #aaa;
+  font-size: 0.9rem;
+}

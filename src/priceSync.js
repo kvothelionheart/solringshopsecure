@@ -1,13 +1,24 @@
 // ─── PRICE SYNC ───────────────────────────────────────────────────────────────
 
-const MARKUP = 1.05; // 5% over market
+// Default markup - can be configured in admin
+let CURRENT_MARKUP = 1.10; // 10% over TCGPlayer market price via Scryfall
 const FLOOR_COMMON_UNCOMMON = 0.25;
 const FLOOR_RARE_MYTHIC = 0.50;
+
+// Set custom markup percentage
+export function setMarkupPercent(percent) {
+  CURRENT_MARKUP = 1 + (percent / 100);
+}
+
+// Get current markup as percentage
+export function getMarkupPercent() {
+  return (CURRENT_MARKUP - 1) * 100;
+}
 
 // Calculate final price based on Scryfall market price + your rules
 export function calculatePrice(scryfallPrice, rarity, foil) {
   const marketPrice = parseFloat(scryfallPrice) || 0;
-  const markedUp = marketPrice * MARKUP;
+  const markedUp = marketPrice * CURRENT_MARKUP;
 
   // Determine floor based on rarity
   const floor = (rarity === "rare" || rarity === "mythic")

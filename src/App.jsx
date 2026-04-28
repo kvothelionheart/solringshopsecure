@@ -8,6 +8,7 @@ import { AccountSettings } from "./AccountSettings.jsx";
 import { ResetPasswordPage } from "./ResetPasswordPage.jsx";
 import { UpdatesPage } from "./UpdatesPage.jsx";
 import { PostsAdminPage } from "./PostsAdminPage.jsx";
+import { PriceSettingsPanel } from "./PriceSettingsPanel.jsx";
 import * as db from "./supabase.js";
 import { syncAllPrices } from "./priceSync.js";
 
@@ -1037,6 +1038,11 @@ function InventoryPage({ inventory, onRemove, onUpdate, onClearAll }) {
 
   return (
     <div className="inventory-page">
+      <PriceSettingsPanel 
+        inventory={inventory}
+        onPricesUpdated={() => window.location.reload()}
+      />
+      
       <div className="inv-header">
         <div className="inv-stats-bar">
           <div className="stat-block">
