@@ -12,6 +12,7 @@
   --text-muted: #888899;
   --text-dim: #555566;
   --accent: #c9a84c;
+  --gold: #d4b86a;
   --accent-glow: rgba(201,168,76,0.15);
   --accent2: #7b5ea7;
   --green: #4ade80;
@@ -4435,9 +4436,9 @@ body, p, span, div, button, input, textarea, select {
 
 /* Fix Publish button */
 .btn-save {
-  background: var(--gold) !important;
+  background: #d4b86a !important;
   color: #000 !important;
-  border: 2px solid var(--gold) !important;
+  border: 2px solid #d4b86a !important;
 }
 
 .btn-save:hover:not(:disabled) {
@@ -4447,9 +4448,9 @@ body, p, span, div, button, input, textarea, select {
 
 /* Fix Post Comment button */
 .comment-form button {
-  background: var(--gold) !important;
+  background: #d4b86a !important;
   color: #000 !important;
-  border: 2px solid var(--gold) !important;
+  border: 2px solid #d4b86a !important;
 }
 
 .comment-form button:hover:not(:disabled) {
