@@ -710,3 +710,55 @@ export async function getMarkupPercent() {
 export async function setMarkupPercent(percent) {
   return await setSetting("price_markup_percent", percent);
 }
+
+// ─── ORDER OPERATIONS ─────────────────────────────────────────────────────────
+
+export async function createOrder(orderData) {
+  const { data, error } = await supabase
+    .from("orders")
+    .insert([orderData])
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error creating order:', error);
+    return null;
+  }
+  return data;
+}
+
+export async function fetchOrders() {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching orders:', error);
+    return [];
+  }
+  return data;
+}
+
+export async function updateOrder(orderId, updates) {
+  const { error } = await supabase
+    .from("orders")
+    .update(updates)
+    .eq("id", orderId);
+  
+  return !error;
+}
+
+export async function addTrackingNumber(orderId, trackingNumber, carrier = 'USPS') {
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      tracking_number: trackingNumber,
+      tracking_carrier: carrier,
+      shipped_at: new Date().toISOString(),
+      fulfillment_status: 'shipped'
+    })
+    .eq("id", orderId);
+  
+  return !error;
+}

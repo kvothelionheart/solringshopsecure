@@ -1,295 +1,216 @@
-import { useState, useEffect } from "react";
-import * as db from "./supabase.js";
-
-function formatPrice(price) {
-  if (!price) return "$0.00";
-  return `$${parseFloat(price).toFixed(2)}`;
-}
-
-function formatDate(dateString) {
-  if (!dateString) return "—";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
+import { useState, useEffect } from 'react';
+import * as db from './supabase.js';
+import * as email from './emailService.js';
 
 export function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all"); // all, pending, shipped, completed
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [filter, setFilter] = useState('all'); // all, pending, shipped
 
   useEffect(() => {
     loadOrders();
   }, []);
 
-  const loadOrders = async () => {
+  async function loadOrders() {
     setLoading(true);
     const data = await db.fetchOrders();
     setOrders(data);
     setLoading(false);
-  };
+  }
 
-  const updateOrderStatus = async (orderId, newStatus) => {
-    const success = await db.updateOrderStatus(orderId, newStatus);
-    if (success) {
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
-      );
-      if (selectedOrder?.id === orderId) {
-        setSelectedOrder({ ...selectedOrder, status: newStatus });
-      }
-    }
-  };
-
-  const filtered = orders.filter((o) => {
-    if (filter === "all") return true;
-    return o.status === filter;
+  const filteredOrders = orders.filter(order => {
+    if (filter === 'pending') return order.fulfillment_status === 'pending';
+    if (filter === 'shipped') return order.fulfillment_status === 'shipped';
+    return true;
   });
 
-  const stats = {
-    total: orders.length,
-    pending: orders.filter((o) => o.status === "pending").length,
-    shipped: orders.filter((o) => o.status === "shipped").length,
-    completed: orders.filter((o) => o.status === "completed").length,
-  };
-
-  const totalRevenue = orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0);
+  if (loading) {
+    return <div className="orders-page"><p>Loading orders...</p></div>;
+  }
 
   return (
     <div className="orders-page">
       <div className="orders-header">
-        <h1 className="page-title">Orders</h1>
-        <button className="btn-ghost" onClick={loadOrders}>
-          ↻ Refresh
-        </button>
-      </div>
-
-      {/* Stats bar */}
-      <div className="orders-stats">
-        <div className="order-stat">
-          <span className="order-stat-num">{stats.total}</span>
-          <span className="order-stat-label">Total Orders</span>
-        </div>
-        <div className="order-stat">
-          <span className="order-stat-num pending">{stats.pending}</span>
-          <span className="order-stat-label">Pending</span>
-        </div>
-        <div className="order-stat">
-          <span className="order-stat-num shipped">{stats.shipped}</span>
-          <span className="order-stat-label">Shipped</span>
-        </div>
-        <div className="order-stat">
-          <span className="order-stat-num completed">{stats.completed}</span>
-          <span className="order-stat-label">Completed</span>
-        </div>
-        <div className="order-stat">
-          <span className="order-stat-num revenue">{formatPrice(totalRevenue)}</span>
-          <span className="order-stat-label">Total Revenue</span>
+        <h2>Orders</h2>
+        <div className="orders-filters">
+          <button
+            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
+          >
+            All ({orders.length})
+          </button>
+          <button
+            className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
+            onClick={() => setFilter('pending')}
+          >
+            Pending ({orders.filter(o => o.fulfillment_status === 'pending').length})
+          </button>
+          <button
+            className={`filter-btn ${filter === 'shipped' ? 'active' : ''}`}
+            onClick={() => setFilter('shipped')}
+          >
+            Shipped ({orders.filter(o => o.fulfillment_status === 'shipped').length})
+          </button>
         </div>
       </div>
 
-      {/* Filter tabs */}
-      <div className="orders-filters">
-        <button
-          className={`filter-tab ${filter === "all" ? "active" : ""}`}
-          onClick={() => setFilter("all")}
-        >
-          All ({stats.total})
-        </button>
-        <button
-          className={`filter-tab ${filter === "pending" ? "active" : ""}`}
-          onClick={() => setFilter("pending")}
-        >
-          Pending ({stats.pending})
-        </button>
-        <button
-          className={`filter-tab ${filter === "shipped" ? "active" : ""}`}
-          onClick={() => setFilter("shipped")}
-        >
-          Shipped ({stats.shipped})
-        </button>
-        <button
-          className={`filter-tab ${filter === "completed" ? "active" : ""}`}
-          onClick={() => setFilter("completed")}
-        >
-          Completed ({stats.completed})
-        </button>
-      </div>
-
-      {loading ? (
-        <div className="loading-state">Loading orders…</div>
-      ) : filtered.length === 0 ? (
-        <div className="empty-state">
-          <p>No {filter === "all" ? "" : filter} orders yet</p>
-          <p className="empty-hint">Orders will appear here when customers complete checkout</p>
+      {filteredOrders.length === 0 ? (
+        <div className="orders-empty">
+          <p>No {filter !== 'all' ? filter : ''} orders yet</p>
         </div>
       ) : (
-        <div className="orders-grid">
-          {/* Orders list */}
-          <div className="orders-list">
-            {filtered.map((order) => (
-              <div
-                key={order.id}
-                className={`order-card ${selectedOrder?.id === order.id ? "selected" : ""}`}
-                onClick={() => setSelectedOrder(order)}
-              >
-                <div className="order-card-header">
-                  <span className="order-id">{order.id}</span>
-                  <span className={`order-status status-${order.status}`}>
-                    {order.status}
-                  </span>
-                </div>
-                <div className="order-card-customer">
-                  <span className="order-customer-name">{order.customer_name}</span>
-                  <span className="order-customer-email">{order.customer_email}</span>
-                </div>
-                <div className="order-card-footer">
-                  <span className="order-total">{formatPrice(order.total)}</span>
-                  <span className="order-date">{formatDate(order.created_at)}</span>
-                </div>
-              </div>
-            ))}
+        <div className="orders-list">
+          {filteredOrders.map(order => (
+            <OrderCard key={order.id} order={order} onUpdate={loadOrders} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function OrderCard({ order, onUpdate }) {
+  const [expanded, setExpanded] = useState(false);
+  const [trackingInput, setTrackingInput] = useState(order.tracking_number || '');
+  const [carrier, setCarrier] = useState(order.tracking_carrier || 'USPS');
+  const [saving, setSaving] = useState(false);
+
+  async function handleAddTracking() {
+    if (!trackingInput) {
+      alert('Please enter a tracking number');
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const success = await db.addTrackingNumber(order.id, trackingInput, carrier);
+      
+      if (success) {
+        // Send tracking email to customer
+        const updatedOrder = { ...order, tracking_number: trackingInput, tracking_carrier: carrier };
+        await email.sendTrackingEmail(updatedOrder);
+        
+        alert('Tracking number saved and email sent to customer!');
+        onUpdate();
+      } else {
+        alert('Failed to save tracking number');
+      }
+    } catch (error) {
+      console.error('Error adding tracking:', error);
+      alert('Error saving tracking number');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const totalItems = order.items.reduce((sum, item) => sum + item.qty, 0);
+
+  return (
+    <div className={`order-card ${order.fulfillment_status === 'shipped' ? 'shipped' : ''}`}>
+      <div className="order-card-header" onClick={() => setExpanded(!expanded)}>
+        <div className="order-number">
+          <strong>{order.order_number}</strong>
+          <span className={`status-badge ${order.fulfillment_status}`}>
+            {order.fulfillment_status}
+          </span>
+        </div>
+        <div className="order-meta">
+          <span>{totalItems} item{totalItems !== 1 ? 's' : ''}</span>
+          <span>${order.total_usd.toFixed(2)}</span>
+          <span>◎{order.total_sol.toFixed(4)}</span>
+        </div>
+        <div className="order-date">
+          {new Date(order.created_at).toLocaleDateString()}
+        </div>
+        <button className="expand-btn">{expanded ? '−' : '+'}</button>
+      </div>
+
+      {expanded && (
+        <div className="order-card-body">
+          <div className="order-section">
+            <h4>Customer</h4>
+            <p><strong>{order.shipping_name}</strong></p>
+            <p>{order.customer_email}</p>
           </div>
 
-          {/* Order detail panel */}
-          {selectedOrder && (
-            <div className="order-detail-panel">
-              <div className="order-detail-header">
-                <h2 className="order-detail-title">{selectedOrder.id}</h2>
-                <span className={`order-status-badge status-${selectedOrder.status}`}>
-                  {selectedOrder.status}
-                </span>
-              </div>
+          <div className="order-section">
+            <h4>Shipping Address</h4>
+            <p>{order.shipping_address_line1}</p>
+            {order.shipping_address_line2 && <p>{order.shipping_address_line2}</p>}
+            <p>{order.shipping_city}, {order.shipping_state} {order.shipping_zip}</p>
+          </div>
 
-              {/* Status actions */}
-              <div className="order-actions">
-                {selectedOrder.status === "pending" && (
-                  <button
-                    className="btn-primary small"
-                    onClick={() => updateOrderStatus(selectedOrder.id, "shipped")}
-                  >
-                    Mark as Shipped
-                  </button>
-                )}
-                {selectedOrder.status === "shipped" && (
-                  <button
-                    className="btn-primary small"
-                    onClick={() => updateOrderStatus(selectedOrder.id, "completed")}
-                  >
-                    Mark as Completed
-                  </button>
-                )}
-                {selectedOrder.status === "completed" && (
-                  <span className="completed-badge">✓ Order Complete</span>
-                )}
+          <div className="order-section">
+            <h4>Items</h4>
+            {order.items.map((item, i) => (
+              <div key={i} className="order-item">
+                <span>{item.name} {item.foil ? '(Foil)' : ''} - {item.condition}</span>
+                <span>×{item.qty}</span>
+                <span>${(item.price * item.qty).toFixed(2)}</span>
               </div>
-
-              {/* Customer info */}
-              <div className="order-section">
-                <h3 className="order-section-title">Customer</h3>
-                <div className="order-info-grid">
-                  <div className="order-info-item">
-                    <span className="order-info-label">Name</span>
-                    <span className="order-info-value">{selectedOrder.customer_name}</span>
-                  </div>
-                  <div className="order-info-item">
-                    <span className="order-info-label">Email</span>
-                    <a
-                      href={`mailto:${selectedOrder.customer_email}`}
-                      className="order-info-link"
-                    >
-                      {selectedOrder.customer_email}
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Shipping address */}
-              <div className="order-section">
-                <h3 className="order-section-title">Ship To</h3>
-                <div className="order-address">
-                  <p>{selectedOrder.shipping_address}</p>
-                  <p>
-                    {selectedOrder.shipping_city}, {selectedOrder.shipping_state}{" "}
-                    {selectedOrder.shipping_zip}
-                  </p>
-                  <p>{selectedOrder.shipping_country}</p>
-                </div>
-              </div>
-
-              {/* Items */}
-              <div className="order-section">
-                <h3 className="order-section-title">Items</h3>
-                <div className="order-items">
-                  {selectedOrder.items.map((item, i) => (
-                    <div key={i} className="order-item">
-                      <div className="order-item-info">
-                        <span className="order-item-name">{item.name}</span>
-                        <span className="order-item-meta">
-                          {item.set} · {item.condition}
-                          {item.foil ? " · ✦ Foil" : ""}
-                        </span>
-                      </div>
-                      <div className="order-item-pricing">
-                        <span className="order-item-qty">×{item.qty}</span>
-                        <span className="order-item-price">
-                          {formatPrice(parseFloat(item.price) * item.qty)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Payment info */}
-              <div className="order-section">
-                <h3 className="order-section-title">Payment</h3>
-                <div className="order-info-grid">
-                  <div className="order-info-item">
-                    <span className="order-info-label">Method</span>
-                    <span className="order-info-value">{selectedOrder.currency}</span>
-                  </div>
-                  <div className="order-info-item">
-                    <span className="order-info-label">Total</span>
-                    <span className="order-info-value total">
-                      {formatPrice(selectedOrder.total)}
-                    </span>
-                  </div>
-                  {selectedOrder.tx_signature && (
-                    <div className="order-info-item full-width">
-                      <span className="order-info-label">Transaction</span>
-                      <span className="order-info-value tx">
-                        {selectedOrder.tx_signature}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Order metadata */}
-              <div className="order-section">
-                <h3 className="order-section-title">Details</h3>
-                <div className="order-info-grid">
-                  <div className="order-info-item">
-                    <span className="order-info-label">Order Date</span>
-                    <span className="order-info-value">
-                      {formatDate(selectedOrder.created_at)}
-                    </span>
-                  </div>
-                  <div className="order-info-item">
-                    <span className="order-info-label">Order ID</span>
-                    <span className="order-info-value">{selectedOrder.id}</span>
-                  </div>
-                </div>
-              </div>
+            ))}
+            <div className="order-item order-total">
+              <span>Shipping</span>
+              <span></span>
+              <span>${order.shipping_fee.toFixed(2)}</span>
             </div>
-          )}
+            <div className="order-item order-total">
+              <strong>Total</strong>
+              <span></span>
+              <strong>${order.total_usd.toFixed(2)}</strong>
+            </div>
+          </div>
+
+          <div className="order-section">
+            <h4>Transaction</h4>
+            <p className="tx-hash">
+              {order.transaction_signature}
+              <a
+                href={`https://solscan.io/tx/${order.transaction_signature}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="tx-link"
+              >
+                View on Solscan →
+              </a>
+            </p>
+          </div>
+
+          <div className="order-section tracking-section">
+            <h4>Tracking Number</h4>
+            {order.tracking_number ? (
+              <div className="tracking-display">
+                <p><strong>{order.tracking_number}</strong></p>
+                <p>Carrier: {order.tracking_carrier}</p>
+                <p>Shipped: {new Date(order.shipped_at).toLocaleString()}</p>
+              </div>
+            ) : (
+              <div className="tracking-input">
+                <select
+                  value={carrier}
+                  onChange={(e) => setCarrier(e.target.value)}
+                >
+                  <option value="USPS">USPS</option>
+                  <option value="UPS">UPS</option>
+                  <option value="FedEx">FedEx</option>
+                </select>
+                <input
+                  type="text"
+                  value={trackingInput}
+                  onChange={(e) => setTrackingInput(e.target.value)}
+                  placeholder="Enter tracking number..."
+                />
+                <button
+                  className="btn-add-tracking"
+                  onClick={handleAddTracking}
+                  disabled={saving}
+                >
+                  {saving ? 'Saving...' : 'Add & Email Customer'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

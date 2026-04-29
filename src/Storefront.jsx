@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Checkout } from "./Checkout.jsx";
+import { CheckoutModal } from "./CheckoutModal.jsx";
 import { CardDetailModal } from "./CardDetailModal.jsx";
 import { AuthModal } from "./AuthModal.jsx";
 import { useAuth } from "./AuthContext.jsx";
@@ -746,13 +746,13 @@ export function Storefront({ inventory, onAdminToggle }) {
       )}
 
       {checkoutOpen && (
-        <Checkout
+        <CheckoutModal
           cart={cart}
-          cartTotal={cartTotal}
           onClose={() => setCheckoutOpen(false)}
-          onComplete={() => {
+          onSuccess={() => {
             setCheckoutOpen(false);
             clearCart();
+            alert('Order placed successfully! Check your email for confirmation.');
           }}
         />
       )}
