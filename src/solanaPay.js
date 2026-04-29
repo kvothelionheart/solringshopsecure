@@ -1,6 +1,6 @@
 // Solana Pay utilities for processing payments
 
-const MERCHANT_WALLET = '9tYP264asowHuBFHRPY5sULr4zCgFdB6AKZ573VQ3r14';
+const MERCHANT_WALLET = 'BmTwKYmLFnj6wjJtkBxLoWhj1SaZ94S5hmEoQS3omkeL';
 const SOLANA_RPC = 'https://api.devnet.solana.com';
 /**
  * Get current SOL/USD price from CoinGecko
