@@ -607,7 +607,7 @@ export function Storefront({ inventory, onAdminToggle }) {
         const order = { mythic: 0, rare: 1, uncommon: 2, common: 3 };
         return (order[a.rarity] ?? 4) - (order[b.rarity] ?? 4);
       }
-      if (sort === "newest") return new Date(b.addedAt) - new Date(a.addedAt);
+      if (sort === "newest") return new Date(b.added_at) - new Date(a.added_at);
       return 0;
     });
 

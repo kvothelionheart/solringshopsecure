@@ -2,6 +2,7 @@
 
 const MERCHANT_WALLET = '9tYP264asowHuBFHRPY5sULr4zCgFdB6AKZ573VQ3r14';
 const SOLANA_RPC = 'https://api.mainnet-beta.solana.com';
+
 /**
  * Get current SOL/USD price from CoinGecko
  */

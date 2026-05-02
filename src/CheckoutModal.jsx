@@ -29,6 +29,19 @@ export function CheckoutModal({ cart, onClose, onSuccess }) {
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const total = subtotal + SHIPPING_FEE;
   const totalSol = solPrice ? solanaPay.usdToSol(total, solPrice) : null;
+  
+  // Debug logging
+  useEffect(() => {
+    if (solPrice && total) {
+      console.log('[Checkout] Conversion:', {
+        subtotal: subtotal.toFixed(2),
+        shipping: SHIPPING_FEE.toFixed(2),
+        totalUSD: total.toFixed(2),
+        solPrice: solPrice.toFixed(2),
+        totalSOL: totalSol?.toFixed(6)
+      });
+    }
+  }, [solPrice, total, subtotal, totalSol]);
 
   // Fetch SOL price on mount
   useEffect(() => {
@@ -38,9 +51,16 @@ export function CheckoutModal({ cart, onClose, onSuccess }) {
   }, []);
 
   async function loadSolPrice() {
+    console.log('[Checkout] Fetching SOL price from CoinGecko...');
     const price = await solanaPay.getSolPrice();
-    if (price) {
+    console.log('[Checkout] SOL price received:', price);
+    
+    if (price && price > 0) {
       setSolPrice(price);
+      console.log('[Checkout] SOL price set to:', price);
+    } else {
+      console.error('[Checkout] Invalid SOL price received:', price);
+      alert('Unable to load current SOL price. Please refresh and try again.');
     }
   }
 
@@ -141,6 +161,15 @@ export function CheckoutModal({ cart, onClose, onSuccess }) {
 
       if (!order) {
         throw new Error('Failed to create order in database');
+      }
+
+      // Deduct purchased items from inventory
+      console.log('[Checkout] Deducting inventory for order:', order.order_number);
+      for (const item of cart) {
+        const success = await db.deductInventory(item.id, item.qty);
+        if (!success) {
+          console.error('[Checkout] Failed to deduct inventory for:', item.name);
+        }
       }
 
       // Send confirmation emails

@@ -236,31 +236,31 @@ export function ImportPage({ onImportComplete }) {
 
           const entry = {
             id: `${card.id}_${condition}_${foil ? "foil" : "nonfoil"}_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 10)}`,
-            cardId: card.id,
+            card_id: card.id,
             name: card.name,
             set: card.set,
-            setName: card.set_name,
-            collectorNumber: card.collector_number,
+            set_name: card.set_name,
+            collector_number: card.collector_number,
             condition,
             foil,
             qty,
             price: price.toFixed(2),
             notes: row["notes"] || "",
-            imageUri:
+            image_uri:
               card.image_uris?.normal ||
               card.card_faces?.[0]?.image_uris?.normal ||
               "",
-            imageLarge:
+            image_large:
               card.image_uris?.large ||
               card.card_faces?.[0]?.image_uris?.large ||
               "",
             rarity: card.rarity,
             colors: card.colors || [],
-            typeLine: card.type_line,
-            addedAt: new Date().toISOString(),
-            scryfallUri: card.scryfall_uri,
-            oracleText: card.oracle_text || card.card_faces?.[0]?.oracle_text || "",
-            manaCost: card.mana_cost || card.card_faces?.[0]?.mana_cost || "",
+            type_line: card.type_line,
+            added_at: new Date().toISOString(),
+            scryfall_uri: card.scryfall_uri,
+            oracle_text: card.oracle_text || card.card_faces?.[0]?.oracle_text || "",
+            mana_cost: card.mana_cost || card.card_faces?.[0]?.mana_cost || "",
             cmc: card.cmc,
             power: card.power,
             toughness: card.toughness,

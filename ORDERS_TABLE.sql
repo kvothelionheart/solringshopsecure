@@ -90,7 +90,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION set_order_number()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF NEW.order_number IS NULL THEN
+  IF NEW.order_number IS NULL OR NEW.order_number = '' THEN
     NEW.order_number := generate_order_number();
   END IF;
   RETURN NEW;

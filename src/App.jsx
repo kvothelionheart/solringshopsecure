@@ -143,7 +143,7 @@ function useInventory() {
           manaCost: item.mana_cost,
           typeLine: item.type_line,
           scryfallUri: item.scryfall_uri,
-          addedAt: item.added_at,
+          added_at: item.added_at,
         }));
         setInventory(transformedData);
         setLoading(false);
@@ -177,7 +177,7 @@ function useInventory() {
         rarity: card.rarity,
         colors: card.colors || [],
         typeLine: card.type_line,
-        addedAt: new Date().toISOString(),
+        added_at: new Date().toISOString(),
         scryfallUri: card.scryfall_uri,
         oracleText: card.oracle_text || card.card_faces?.[0]?.oracle_text || "",
         manaCost: card.mana_cost || card.card_faces?.[0]?.mana_cost || "",
@@ -1032,7 +1032,7 @@ function InventoryPage({ inventory, onRemove, onUpdate, onClearAll }) {
       if (sortBy === "price") return parseFloat(b.price) - parseFloat(a.price);
       if (sortBy === "condition") return CONDITIONS.indexOf(a.condition) - CONDITIONS.indexOf(b.condition);
       if (sortBy === "set") return a.setName?.localeCompare(b.setName);
-      if (sortBy === "added") return new Date(b.addedAt) - new Date(a.addedAt);
+      if (sortBy === "added") return new Date(b.added_at) - new Date(a.added_at);
       return 0;
     });
 

@@ -12,77 +12,204 @@ export async function sendOrderConfirmation(order) {
     <!DOCTYPE html>
     <html>
     <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #0a0a0c; color: #d4b86a; padding: 20px; text-align: center; }
-        .header h1 { margin: 0; font-size: 24px; }
-        .content { background: #f9f9f9; padding: 30px; }
-        .order-details { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; }
-        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .total { font-size: 18px; font-weight: bold; padding-top: 15px; border-top: 2px solid #d4b86a; }
-        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
-        .tx-hash { font-family: monospace; font-size: 11px; word-break: break-all; background: #f0f0f0; padding: 10px; border-radius: 4px; }
+        body { 
+          margin: 0; 
+          padding: 0; 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+          background-color: #f5f5f5;
+        }
+        .container { 
+          max-width: 600px; 
+          margin: 40px auto; 
+          background: #ffffff;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header { 
+          background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+          color: #d4b86a; 
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .header h1 { 
+          margin: 0; 
+          font-size: 28px;
+          font-weight: 600;
+          letter-spacing: 1px;
+        }
+        .header p {
+          margin: 10px 0 0 0;
+          color: #999;
+          font-size: 14px;
+        }
+        .content { 
+          padding: 40px 30px;
+        }
+        .order-number {
+          text-align: center;
+          font-size: 16px;
+          color: #666;
+          margin-bottom: 30px;
+        }
+        .order-number strong {
+          color: #d4b86a;
+          font-size: 18px;
+        }
+        .section {
+          background: #f9f9f9;
+          padding: 20px;
+          margin-bottom: 20px;
+          border-radius: 6px;
+          border-left: 3px solid #d4b86a;
+        }
+        .section h3 {
+          margin: 0 0 15px 0;
+          color: #333;
+          font-size: 16px;
+          font-weight: 600;
+        }
+        .item-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 12px 0;
+          border-bottom: 1px solid #e0e0e0;
+        }
+        .item-row:last-child {
+          border-bottom: none;
+        }
+        .item-name {
+          flex: 1;
+          color: #333;
+        }
+        .item-qty {
+          margin: 0 15px;
+          color: #666;
+        }
+        .item-price {
+          font-weight: 600;
+          color: #333;
+        }
+        .total-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 15px 0;
+          border-top: 2px solid #d4b86a;
+          margin-top: 10px;
+          font-weight: 700;
+          font-size: 18px;
+        }
+        .address {
+          line-height: 1.6;
+          color: #555;
+        }
+        .tx-box {
+          background: #f0f0f0;
+          padding: 15px;
+          border-radius: 4px;
+          margin-top: 10px;
+        }
+        .tx-hash {
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
+          word-break: break-all;
+          color: #666;
+          margin: 0;
+        }
+        .button {
+          display: inline-block;
+          background: #d4b86a;
+          color: #000;
+          padding: 12px 30px;
+          text-decoration: none;
+          border-radius: 4px;
+          font-weight: 600;
+          margin-top: 10px;
+        }
+        .footer {
+          background: #f5f5f5;
+          text-align: center;
+          padding: 30px;
+          color: #999;
+          font-size: 13px;
+        }
+        .footer strong {
+          color: #666;
+        }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>◎ Order Confirmed</h1>
+          <h1>◎ THE SOL RING SHOP</h1>
+          <p>Thank You For Your Order</p>
         </div>
+        
         <div class="content">
-          <h2>Thank you for your order!</h2>
-          <p>Order #<strong>${order.order_number}</strong></p>
-          <p>Your payment has been confirmed on the Solana blockchain.</p>
+          <div class="order-number">
+            Order <strong>#${order.order_number}</strong>
+          </div>
           
-          <div class="order-details">
-            <h3>Order Details</h3>
+          <p style="text-align: center; color: #666; margin-bottom: 30px;">
+            Your payment has been confirmed on the Solana blockchain.<br>
+            We'll ship your cards and send tracking information shortly.
+          </p>
+          
+          <div class="section">
+            <h3>Order Items</h3>
             ${order.items.map(item => `
-              <div class="item">
-                <span>${item.name} ${item.foil ? '(Foil)' : ''} - ${item.condition}</span>
-                <span>$${item.price} × ${item.qty}</span>
+              <div class="item-row">
+                <span class="item-name">${item.name}${item.foil ? ' (Foil)' : ''} - ${item.condition}</span>
+                <span class="item-qty">×${item.qty}</span>
+                <span class="item-price">$${(item.price * item.qty).toFixed(2)}</span>
               </div>
             `).join('')}
-            <div class="item">
-              <span>Shipping</span>
-              <span>$${order.shipping_fee.toFixed(2)}</span>
+            <div class="item-row">
+              <span class="item-name">Shipping (USPS)</span>
+              <span class="item-qty"></span>
+              <span class="item-price">$${order.shipping_fee.toFixed(2)}</span>
             </div>
-            <div class="item total">
+            <div class="total-row">
               <span>Total (USD)</span>
               <span>$${order.total_usd.toFixed(2)}</span>
             </div>
-            <div class="item">
-              <span>Paid (SOL)</span>
-              <span>◎${order.total_sol.toFixed(6)}</span>
+            <div style="text-align: right; margin-top: 10px; color: #999; font-size: 14px;">
+              Paid: ◎${order.total_sol.toFixed(6)} SOL
             </div>
           </div>
 
-          <div class="order-details">
+          <div class="section">
             <h3>Shipping Address</h3>
-            <p>
+            <div class="address">
               ${order.shipping_name}<br>
               ${order.shipping_address_line1}<br>
               ${order.shipping_address_line2 ? order.shipping_address_line2 + '<br>' : ''}
               ${order.shipping_city}, ${order.shipping_state} ${order.shipping_zip}<br>
               ${order.shipping_country}
-            </p>
+            </div>
           </div>
 
-          <div class="order-details">
-            <h3>Transaction Details</h3>
-            <p><strong>Transaction Hash:</strong></p>
-            <div class="tx-hash">${order.transaction_signature}</div>
-            <p style="margin-top: 10px; font-size: 12px; color: #666;">
-              You can verify this transaction on 
-              <a href="https://solscan.io/tx/${order.transaction_signature}" target="_blank">Solscan</a>
-            </p>
+          <div class="section">
+            <h3>Transaction Verification</h3>
+            <div class="tx-box">
+              <p class="tx-hash">${order.transaction_signature}</p>
+            </div>
+            <a href="https://solscan.io/tx/${order.transaction_signature}" class="button" target="_blank">
+              View on Solscan →
+            </a>
           </div>
 
-          <p>We'll send you another email with tracking information once your order ships!</p>
+          <p style="text-align: center; color: #999; margin-top: 40px; font-size: 14px;">
+            Questions? Just reply to this email
+          </p>
         </div>
+        
         <div class="footer">
-          <p>The Sol Ring Shop | Crypto-Native MTG Cards</p>
-          <p>Questions? Reply to this email</p>
+          <strong>The Sol Ring Shop</strong><br>
+          Crypto-Native Magic: The Gathering Cards
         </div>
       </div>
     </body>
@@ -91,7 +218,7 @@ export async function sendOrderConfirmation(order) {
 
   return await sendEmail({
     to: order.customer_email,
-    subject: `Order Confirmed - ${order.order_number}`,
+    subject: `Order #${order.order_number} Confirmed - The Sol Ring Shop`,
     html: emailHtml
   });
 }

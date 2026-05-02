@@ -762,3 +762,32 @@ export async function addTrackingNumber(orderId, trackingNumber, carrier = 'USPS
   
   return !error;
 }
+
+export async function deductInventory(itemId, qtyPurchased) {
+  // Get current quantity
+  const { data: item, error: fetchError } = await supabase
+    .from("inventory")
+    .select("qty")
+    .eq("id", itemId)
+    .single();
+  
+  if (fetchError || !item) {
+    console.error('Error fetching item for deduction:', fetchError);
+    return false;
+  }
+
+  const newQty = Math.max(0, item.qty - qtyPurchased);
+  
+  const { error: updateError } = await supabase
+    .from("inventory")
+    .update({ qty: newQty })
+    .eq("id", itemId);
+  
+  if (updateError) {
+    console.error('Error updating inventory qty:', updateError);
+    return false;
+  }
+  
+  console.log(`Inventory deducted: ${itemId} from ${item.qty} to ${newQty}`);
+  return true;
+}
