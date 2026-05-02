@@ -238,7 +238,7 @@ export function ImportPage({ onImportComplete }) {
             id: `${card.id}_${condition}_${foil ? "foil" : "nonfoil"}_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 10)}`,
             card_id: card.id,
             name: card.name,
-            set: card.set,
+            set_code: card.set,
             set_name: card.set_name,
             collector_number: card.collector_number,
             condition,
