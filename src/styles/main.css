@@ -2197,7 +2197,7 @@ img { display: block; }
 }
 
 .sf-recent-card {
-  flex: 0 0 240px;
+  flex: 0 0 160px;
   scroll-snap-align: start;
 }
 
@@ -2205,6 +2205,7 @@ img { display: block; }
   border-color: var(--accent);
   background: var(--accent-glow);
   box-shadow: 0 4px 12px rgba(201,168,76,0.1);
+  font-size: 0.85rem;
 }
 
 .sf-recent-card .sf-card:hover {
@@ -2214,7 +2215,10 @@ img { display: block; }
 
 @media (max-width: 768px) {
   .sf-recent-card {
-    flex: 0 0 180px;
+    flex: 0 0 140px;
+  }
+  .sf-recent-card .sf-card {
+    font-size: 0.75rem;
   }
 }
 
